@@ -3,7 +3,7 @@ import { config } from "dotenv"
 import multer from "multer"
 import util from "util";
 import fs from "fs"
-import { uploadFile } from "./s3";
+import { getFileStream, uploadFile } from "./s3";
 import cors from "cors";
 
 
@@ -38,5 +38,13 @@ app.post('/images', upload.single('file'), async (req, res) => {
     const description = req.body.description
     res.send(`File Uploaded`)
   })
+
+app.get("/get/:Key", async (req, res) => {
+  const Key = req.params.Key;
+
+  const fileStream =await  getFileStream( Key )
+
+   fileStream.pipe( res )
+})
 
 app.listen(PORT, ()=> console.log("The server is running fine and good"));
